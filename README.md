@@ -48,15 +48,12 @@ The project follows the **Design First** approach: the API contract is defined f
 
 ---
 
-# 🚀 Live Demo
+## 🚀 Live Demo
 
-Application
-
-https://xhrobj-ai-cal-386.onrender.com
-
-Health Check
-
-https://xhrobj-ai-cal-386.onrender.com/health
+| Service | URL |
+|---------|-----|
+| Application | Coming Soon |
+| Health Check | Coming Soon |
 
 ---
 
