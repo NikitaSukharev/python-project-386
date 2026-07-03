@@ -1,182 +1,95 @@
-# 📅 Calendar Booking
+# Календарь звонков
 
-![CI](https://img.shields.io/github/actions/workflow/status/NikitaSukharev/python-project-386/ci.yml?branch=main)
-![Go](https://img.shields.io/badge/Go-1.24-00ADD8?logo=go&logoColor=white)
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)
-![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-6BA539)
-![License](https://img.shields.io/badge/License-MIT-green)
+Учебный проект курса Hexlet AI for Developers: упрощённый сервис бронирования временных слотов по мотивам Cal.com.
 
-A modern appointment booking application inspired by **Cal.com**.
+Проект собран по подходу Design First: сначала контракт в TypeSpec/OpenAPI, затем backend, frontend, e2e, CI, Docker и публичный deploy.
 
-The project follows the **Design First** approach: the API contract is defined first using **TypeSpec/OpenAPI**, followed by the implementation of the backend, frontend, automated testing, Docker support, and CI.
+## Демо
 
----
+- Приложение: `<ВАШ_URL_ПОСЛЕ_ДЕПЛОЯ_НА_СВОЕМ_RENDER>`
+- Health-check: `<ВАШ_URL_ПОСЛЕ_ДЕПЛОЯ_НА_СВОЕМ_RENDER>/health`
 
-# ✨ Features
+## Основной сценарий
 
-- 📅 Create meeting types
-- ⏰ Book available time slots
-- 🚫 Prevent double booking
-- 👤 Admin dashboard
-- 📖 OpenAPI & TypeSpec contract
-- ⚡ Fast Go backend
-- ⚛️ React + TypeScript frontend
-- 🧪 End-to-End tests with Playwright
-- 🐳 Docker support
-- 🚀 GitHub Actions CI
+1. Владелец открывает `/admin` и создаёт тип встречи.
+2. Гость открывает `/`, выбирает тип встречи и свободный слот.
+3. Гость подтверждает бронирование.
+4. Владелец возвращается в `/admin` и видит новую запись в списке предстоящих встреч.
 
----
+## Что есть в текущей версии
 
-# 🏗 Architecture
+- один заранее заданный владелец календаря;
+- публичная страница записи со списком типов встреч;
+- выбор свободных слотов на ближайшие 14 дней;
+- создание бронирования на свободное время;
+- защита от двойного бронирования одного и того же слота;
+- owner-панель с созданием event type и просмотром upcoming bookings;
+- Playwright e2e, CI, Docker и deploy в Render.
 
-```
-                +------------------+
-                | React Frontend   |
-                +------------------+
-                         │
-                    REST API
-                         │
-                +------------------+
-                |    Go Backend    |
-                +------------------+
-                         │
-                 In-Memory Storage
-```
+## Стек
 
----
+- backend: Go, in-memory store;
+- frontend: React 19, TypeScript, Vite, React Router;
+- контракт: TypeSpec + OpenAPI;
+- проверки: Go tests, Playwright e2e, GitHub Actions CI;
+- доставка: Docker + Render.
 
-## 🚀 Live Demo
+## Локальный запуск
 
-| Service | URL |
-|---------|-----|
-| Application | Coming Soon |
-| Health Check | Coming Soon |
+Требования:
 
----
+- Go `1.26`;
+- Node.js и npm;
 
-# 📖 User Flow
-
-1. Open the **Admin Dashboard**.
-2. Create a new meeting type.
-3. Open the public booking page.
-4. Select a meeting type.
-5. Choose an available time slot.
-6. Confirm the booking.
-7. View the booking in the admin dashboard.
-
----
-
-# 🛠 Tech Stack
-
-| Layer | Technology |
-|--------|------------|
-| Backend | Go |
-| Frontend | React 19 + TypeScript + Vite |
-| API Contract | TypeSpec + OpenAPI |
-| Testing | Go Tests + Playwright |
-| CI/CD | GitHub Actions |
-| Deployment | Docker + Render |
-
----
-
-# 📂 Project Structure
-
-```
-backend/
-    cmd/
-    internal/
-
-frontend/
-    src/
-
-contracts/
-    openapi/
-    typespec/
-
-docs/
-
-.github/
-```
-
----
-
-# ⚙️ Local Development
-
-## Requirements
-
-- Go 1.24+
-- Node.js
-- npm
-
-Install dependencies
+Установка зависимостей:
 
 ```bash
 npm install
 npm --prefix frontend install
 ```
 
-Run backend
+Запуск backend:
 
 ```bash
 cd backend
 go run ./cmd/api
 ```
 
-Run frontend
+По умолчанию backend доступен на `http://localhost:8080`.
+
+Запуск frontend:
 
 ```bash
 cd frontend
-npm run dev
+npm run dev -- --host 127.0.0.1 --port 5173
 ```
 
-The application will be available at
+После старта:
 
-Frontend
+- публичный интерфейс: `http://127.0.0.1:5173/`
+- owner-панель: `http://127.0.0.1:5173/admin`
+- локальный health-check backend: `http://localhost:8080/health`
 
-```
-http://127.0.0.1:5173
-```
+В dev-режиме frontend ходит в backend через Vite proxy `/api`, поэтому backend должен быть запущен отдельно на `http://localhost:8080`.
 
-Admin
+## Docker
 
-```
-http://127.0.0.1:5173/admin
-```
-
-Backend
-
-```
-http://localhost:8080
-```
-
-Health Check
-
-```
-http://localhost:8080/health
-```
-
----
-
-# 🐳 Docker
-
-Build
+Проект можно поднять одним контейнером:
 
 ```bash
 docker build -t calendar-booking .
-```
-
-Run
-
-```bash
 docker run --rm -e PORT=8080 -p 8080:8080 calendar-booking
 ```
 
----
+После старта контейнера:
 
-# ✅ Available Checks
+- приложение: `http://localhost:8080/`
+- health-check: `http://localhost:8080/health`
+- backend через frontend proxy: `http://localhost:8080/api/health`
+
+## Проверки
+
+Контракт, backend, frontend и e2e проверяются отдельными командами:
 
 ```bash
 npm run check:contracts
@@ -185,64 +98,38 @@ npm run check:frontend
 npm run test:e2e
 ```
 
-Install Playwright browser (first run only)
+`npm run test:e2e:setup` нужен только для одноразовой локальной установки Chromium для Playwright.
 
-```bash
-npm run test:e2e:setup
-```
+## Коммиты и релизы
 
----
+Коммиты в `main`/`master` оформляются по [Conventional Commits](https://www.conventionalcommits.org/ru/v1.0.0/): `feat: ...`, `fix: ...`, `chore: ...`, `docs: ...` и т.д. — тип коммита определяет, что попадёт в changelog и как изменится версия.
 
-# 🚧 Current Limitations
+После пуша в основную ветку workflow `release-please` (`.github/workflows/release-please.yml`) сам открывает/обновляет release-PR со сгенерированным `CHANGELOG.md` и предложенной версией по семантическому версионированию. Мёрдж этого PR публикует релиз и тег.
 
-- No authentication
-- Single calendar owner
-- No external calendar integrations
-- In-memory storage
-- No edit/delete for meeting types
-- Booking window limited to 14 days
-- UTC-only time calculations
+## Ограничения текущей версии
 
----
+- нет авторизации и защиты `/admin`;
+- нет multi-owner режима;
+- нет интеграций с внешними календарями;
+- нет редактирования и удаления event type;
+- данные хранятся только in-memory и сбрасываются после рестарта;
+- окно записи ограничено ближайшими 14 днями;
+- все расчёты времени выполняются в `UTC`.
 
-# 📄 API Contract
+## Структура репозитория
 
-The API is designed using a **Design First** workflow.
-
-```
-TypeSpec
-      │
-      ▼
-OpenAPI
-      │
-      ▼
-Backend
-      │
-      ▼
-Frontend
-```
+- `backend/` — backend на Go;
+- `frontend/` — пользовательский интерфейс на React + TypeScript;
+- `contracts/typespec/` — контракт API в TypeSpec;
+- `contracts/openapi/` — сгенерированная OpenAPI-спека;
+- `docs/` — зафиксированные решения по MVP, домену и этапам проекта.
 
 ---
 
-# 🔄 CI Pipeline
+### Hexlet tests and linter status
 
-Every push automatically runs:
+[![Actions Status](https://github.com/NikitaSukharev/python-project-386/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/NikitaSukharev/python-project-386/actions)
 
-- Backend tests
-- Frontend build
-- API contract validation
-- End-to-End tests
+### SonarQube Cloud
 
----
-
-# 👨‍💻 Author
-
-**Nikita Sukharev**
-
-GitHub: https://github.com/NikitaSukharev
-
----
-
-## Hexlet
-
-This project was developed as part of the **AI for Developers** course by Hexlet.
+[![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-light.svg)](https://sonarcloud.io/summary/new_code?id=NikitaSukharev_python-project-386)

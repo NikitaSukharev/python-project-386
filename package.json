@@ -12,5 +12,6 @@
     "@typespec/compiler": "^1.11.0",
     "@typespec/http": "^1.11.0",
     "@typespec/openapi3": "^1.11.0"
-  }
+  },
+  "version": "0.1.0"
 }
